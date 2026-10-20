@@ -156,3 +156,20 @@ main {
 .pokemon-card > img {
   width: 100%;
 }
+
+.pokemon-card-skeleton-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pokemon-card-skeleton-types {
+  display: flex;
+  gap: 10px;
+  margin-top: 7px;
+  margin-bottom: 40px;
+}
+
+.pokemon-card-skeleton-image {
+  aspect-ratio: 1;
+}

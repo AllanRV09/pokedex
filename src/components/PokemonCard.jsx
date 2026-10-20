@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import PokemonCardSkeleton from "./skeletons/PokemonCardSkeleton"
 
 export default function PokemonCard(props) {
     const [pokemonDetails, setPokemonDetails] = useState({})
@@ -22,11 +23,11 @@ export default function PokemonCard(props) {
             .finally(() => setLoading(false))
     }, [props.pokemon.url])
 
-    const imgUrl = pokemonDetails.sprites && pokemonDetails.sprites.other["official-artwork"].front_default
+    const imgUrl = pokemonDetails.sprites?.other?.["official-artwork"]?.front_default
 
     const details =
         loading ? (
-            <p>Loading Pokemon details...</p>
+            <PokemonCardSkeleton />
         ) : error !== "" ? (
             <p>{error}</p>
         ) : !pokemonDetails.name ? (

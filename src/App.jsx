@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import PokemonCard from "./components/PokemonCard"
+import PokemonCardSkeleton from "./components/skeletons/PokemonCardSkeleton"
+
+const POKEMON_LIMIT = 20
 
 function App() {
   const [pokemon, setPokemon] = useState([])
@@ -7,7 +10,7 @@ function App() {
   const [error, setError] = useState("")
 
   useEffect(() => {
-    fetch("https://pokeapi.co/api/v2/pokemon/?limit=20")
+    fetch(`https://pokeapi.co/api/v2/pokemon/?limit=${POKEMON_LIMIT}`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`Response status: ${res.status}`)
@@ -23,17 +26,25 @@ function App() {
   }, [])
 
   const pokemonContent =
-    loading ? (
-      <p>Loading Pokémon...</p>
-    ) : error !== "" ? (
+    error !== "" ? (
       <p>{error}</p>
-    ) : pokemon.length === 0 ? (
+    ) : !loading && pokemon.length === 0 ? (
       <p>No Pokémon found.</p>
     ) : (
       <section className="pokemon-list">
-        {pokemon.map(poke =>
-          <PokemonCard key={poke.name} pokemon={poke} />
-        )}
+        {
+          loading ? (
+            Array.from({ length: POKEMON_LIMIT }).map((_, index) => (
+              <article key={index} className="pokemon-card">
+                <PokemonCardSkeleton />
+              </article>
+            ))
+          ) : (
+            pokemon.map(poke =>
+              <PokemonCard key={poke.name} pokemon={poke} />
+            )
+          )
+        }
       </section>
     )
 
