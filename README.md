@@ -1,16 +1,87 @@
-# React + Vite
+# Pokédex
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web desarrollada con React y JavaScript que permite explorar Pokémon, consultar sus características, buscar por nombre o número y guardar favoritos. Los datos se obtienen de la [PokéAPI](https://pokeapi.co/docs/v2).
 
-Currently, two official plugins are available:
+## Objetivo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Construir una Pokédex con un diseño minimalista, limpio y responsive, aplicando los conocimientos de React, JavaScript, consumo de APIs, gestión de estado y control de versiones con Git.
 
-## React Compiler
+## Tecnologías
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- JavaScript
+- Vite
+- CSS
+- PokéAPI
+- localStorage
+- Git y GitHub
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Fase 1. Catálogo principal
+
+- [x] Crear el proyecto con React y Vite.
+- [x] Consultar la PokéAPI para obtener los primeros 20 Pokémon.
+- [x] Mostrar los Pokémon en una cuadrícula de tarjetas.
+- [x] Mostrar en cada tarjeta el número, nombre e imagen del Pokémon.
+- [x] Mostrar los tipos de cada Pokémon mediante etiquetas de colores.
+- [ ] Implementar un indicador de carga mientras se obtienen los datos.
+- [ ] Mostrar un mensaje de error si falla la petición a la API.
+- [x] Crear un diseño responsive para escritorio, tablet y móvil.
+
+## Fase 2. Búsqueda, filtros y ordenamiento
+
+- [ ] Implementar una barra de búsqueda por nombre o número.
+- [ ] Filtrar Pokémon por tipo: fuego, agua, planta, eléctrico, etc.
+- [ ] Permitir ordenar por número de Pokédex.
+- [ ] Permitir ordenar alfabéticamente por nombre.
+- [ ] Mostrar un mensaje cuando no haya Pokémon que coincidan con la búsqueda.
+- [ ] Permitir volver fácilmente a la lista completa.
+
+## Fase 3. Detalles de cada Pokémon
+
+- [ ] Permitir seleccionar una tarjeta para consultar los detalles del Pokémon.
+- [ ] Mostrar una imagen ampliada.
+- [ ] Mostrar su número, nombre y tipos.
+- [ ] Mostrar altura y peso.
+- [ ] Mostrar sus habilidades.
+- [ ] Mostrar sus estadísticas base:
+  - [ ] PS.
+  - [ ] Ataque.
+  - [ ] Defensa.
+  - [ ] Ataque especial.
+  - [ ] Defensa especial.
+  - [ ] Velocidad.
+- [ ] Mostrar una descripción en español cuando esté disponible.
+- [ ] Mostrar su línea evolutiva.
+
+## Fase 4. Favoritos
+
+- [ ] Permitir añadir Pokémon a favoritos.
+- [ ] Permitir eliminar Pokémon de favoritos.
+- [ ] Crear una vista exclusiva para los favoritos.
+- [ ] Guardar los favoritos en `localStorage`.
+- [ ] Conservar los favoritos al recargar la página.
+- [ ] Mostrar un mensaje cuando todavía no haya favoritos.
+
+## Fase 5. Diseño y experiencia de usuario
+
+- [ ] Mantener un estilo minimalista, limpio y consistente.
+- [ ] Utilizar tarjetas con imágenes claras, bordes suaves y espaciado uniforme.
+- [ ] Aplicar colores distintivos para los tipos de Pokémon.
+- [ ] Crear una navegación clara entre el catálogo, los favoritos y los detalles.
+- [ ] Añadir estados visuales para carga, error y resultados vacíos.
+- [ ] Comprobar que los controles sean accesibles mediante teclado.
+- [ ] Verificar que el diseño funcione correctamente en distintos tamaños de pantalla.
+- [ ] Revisar los detalles visuales y corregir errores antes de finalizar.
+
+## Documentación
+
+- [React](https://react.dev/learn)
+- [Vite](https://vite.dev/guide/)
+- [PokéAPI](https://pokeapi.co/docs/v2)
+
+## Progreso
+
+El proyecto se desarrollará por fases. Los requerimientos se marcarán como completados conforme se implementen y verifiquen.
+
