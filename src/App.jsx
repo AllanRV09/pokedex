@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import PokemonCard from "./components/PokemonCard"
 import PokemonCardSkeleton from "./components/skeletons/PokemonCardSkeleton"
+import NavBar from "./components/NavBar"
 
 const POKEMON_LIMIT = 20
 
@@ -49,9 +50,14 @@ function App() {
     )
 
   return (
-    <main>
-      {pokemonContent}
-    </main>
+    <>
+      <header>
+        <NavBar />
+      </header>
+      <main>
+        {pokemonContent}
+      </main>
+    </>
   )
 }
 
