@@ -25,8 +25,8 @@ Construir una Pokédex con un diseño minimalista, limpio y responsive, aplicand
 - [x] Mostrar los Pokémon en una cuadrícula de tarjetas.
 - [x] Mostrar en cada tarjeta el número, nombre e imagen del Pokémon.
 - [x] Mostrar los tipos de cada Pokémon mediante etiquetas de colores.
-- [ ] Implementar un indicador de carga mientras se obtienen los datos.
-- [ ] Mostrar un mensaje de error si falla la petición a la API.
+- [x] Implementar un indicador de carga mientras se obtienen los datos.
+- [x] Mostrar un mensaje de error si falla la petición a la API.
 - [x] Crear un diseño responsive para escritorio, tablet y móvil.
 
 ## Fase 2. Búsqueda, filtros y ordenamiento
