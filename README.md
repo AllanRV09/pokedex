@@ -31,11 +31,11 @@ Construir una Pokédex con un diseño minimalista, limpio y responsive, aplicand
 
 ## Fase 2. Búsqueda, filtros y ordenamiento
 
-- [ ] Implementar una barra de búsqueda por nombre o número.
+- [x] Implementar una barra de búsqueda por nombre o número.
 - [ ] Filtrar Pokémon por tipo: fuego, agua, planta, eléctrico, etc.
 - [ ] Permitir ordenar por número de Pokédex.
 - [ ] Permitir ordenar alfabéticamente por nombre.
-- [ ] Mostrar un mensaje cuando no haya Pokémon que coincidan con la búsqueda.
+- [x] Mostrar un mensaje cuando no haya Pokémon que coincidan con la búsqueda.
 - [ ] Permitir volver fácilmente a la lista completa.
 
 ## Fase 3. Detalles de cada Pokémon

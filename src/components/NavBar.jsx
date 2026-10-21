@@ -2,8 +2,12 @@ import { useState } from "react";
 import pokeball from "../assets/pokeball.webp"
 import { MdOutlineSearch, MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 
-export default function NavBar() {
+export default function NavBar(props) {
     const [darkMode, setDarkMode] = useState(false)
+
+    function searchPokemon(event) {
+        props.onSearchChange(event.target.value)
+    }
 
     return (
         <nav className="navbar">
@@ -23,7 +27,13 @@ export default function NavBar() {
                         size="1.3em"
                         aria-hidden={true}
                     />
-                    <input aria-label="Input to search a Pokemon by name or id" type="search" placeholder="Bulbasaur..." />
+                    <input
+                        aria-label="Input to search a Pokemon by name or id"
+                        type="search"
+                        placeholder="Bulbasaur..."
+                        value={props.search}
+                        onChange={searchPokemon}
+                    />
                 </form>
                 <button
                     type="button"
