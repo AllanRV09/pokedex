@@ -43,7 +43,7 @@ export default function PokemonCard(props) {
                         pokemonDetails.types.map(type => (
                             <li
                                 key={type.slot}
-                                className={`type-${type.type.name}`}
+                                className={`type-chip type-${type.type.name}`}
                             >
                                 {type.type.name}
                             </li>

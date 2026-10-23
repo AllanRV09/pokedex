@@ -2,15 +2,19 @@ import { useEffect, useState } from "react"
 import PokemonCard from "./components/PokemonCard"
 import PokemonCardSkeleton from "./components/skeletons/PokemonCardSkeleton"
 import NavBar from "./components/NavBar"
+import TypesFilter from "./components/TypesFilter"
 
 const PAGE_SIZE = 20
 
 function App() {
   const [pokemon, setPokemon] = useState([])
+  const [pokemonFilteredByType, setPokemonFilteredByType] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
+  const [types, setTypes] = useState([])
+  const [typeFilter, setTypeFilter] = useState([])
 
   function handleSearchChange(value) {
     setSearch(value)
@@ -49,12 +53,113 @@ function App() {
     return () => controller.abort()
   }, [])
 
+  useEffect(() => {
+    const controller = new AbortController()
+    fetch("https://pokeapi.co/api/v2/type/", { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Response status: ${res.status}`)
+        }
+
+        return res.json()
+      })
+      .then(data => {
+        return (
+          fetch(`https://pokeapi.co/api/v2/type/?limit=${data.count}`, { signal: controller.signal })
+            .then(res => {
+              if (!res.ok) {
+                throw new Error(`Response status: ${res.status}`);
+              }
+
+              return res.json()
+            })
+            .then(data => setTypes(data.results.filter(type => !["stellar", "unknown", "shadow"].includes(type.name))))
+        )
+      })
+      .catch((e) => {
+        if (e.name === "AbortError") return
+        console.error("Error:", e)
+        setError("Unable to load Pokémon types. Please try again later.")
+      })
+
+    return () => controller.abort()
+  }, [])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    if (typeFilter.length === 0) return
+
+    if (typeFilter.length === 1) {
+      fetch(`https://pokeapi.co/api/v2/type/${typeFilter[0]}/`, { signal: controller.signal })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`Response status: ${res.status}`);
+          }
+
+          return res.json()
+        })
+        .then(data => {
+          const newData = data.pokemon.map(poke => poke.pokemon)
+
+          return setPokemonFilteredByType(newData)
+        })
+        .catch((e) => {
+          if (e.name === "AbortError") return
+          console.error("Error:", e)
+          setError("Unable to load Pokémon by types. Please try again later.")
+        })
+    }
+
+    if (typeFilter.length === 2) {
+      async function handleTypesFilter() {
+        try {
+          const result = await Promise.all([
+            fetch(`https://pokeapi.co/api/v2/type/${typeFilter[0]}/`, { signal: controller.signal })
+              .then(res => {
+                if (!res.ok) {
+                  throw new Error(`Response status: ${res.status}`);
+                }
+
+                return res.json()
+              }),
+            fetch(`https://pokeapi.co/api/v2/type/${typeFilter[1]}/`, { signal: controller.signal })
+              .then(res => {
+                if (!res.ok) {
+                  throw new Error(`Response status: ${res.status}`);
+                }
+
+                return res.json()
+              })
+          ])
+
+          const intersection = result[0].pokemon.filter(type => result[1].pokemon.some(poke => poke.pokemon.name === type.pokemon.name))
+
+          const newData = intersection.map(data => data.pokemon)
+
+          return setPokemonFilteredByType(newData)
+        } catch (e) {
+          if (e.name === "AbortError") return
+          console.error("Error: ", e)
+          setError("Unable to load Pokémon by types. Please try again later.")
+        }
+      }
+
+      handleTypesFilter()
+    }
+
+    return () => controller.abort()
+  }, [typeFilter])
+
   const isNumber = (str) => {
     if (typeof str !== 'string') return false;
     return str.trim() !== '' && Number.isFinite(Number(str));
   }
 
-  const filteredPokemon = pokemon.filter(poke => {
+  const pokemonToFilter = typeFilter.length > 0 ?
+    pokemonFilteredByType :
+    pokemon
+
+  const filteredPokemon = pokemonToFilter.filter(poke => {
     const pokemonUrlSplited = poke.url.split("/")
     const lastPokemonUrlSplited = pokemonUrlSplited[pokemonUrlSplited.length - 2]
 
@@ -117,6 +222,21 @@ function App() {
         <NavBar search={search} onSearchChange={handleSearchChange} />
       </header>
       <main>
+        <h2>Discover All Pokémon</h2>
+        <p>Explore the Pokédex and learn about Pokémon from every generation.</p>
+        <fieldset className="filter-types">
+          <div className="filter-types__options">
+            {types.map(type => (
+              <TypesFilter
+                key={type.name}
+                types={type}
+                typeFilter={typeFilter}
+                setTypeFilter={setTypeFilter}
+                setCurrentPage={setCurrentPage}
+              />
+            ))}
+          </div>
+        </fieldset>
         {pokemonContent}
         {numberPages > 1 && (
           <nav className="pagination" aria-label="Pokemon pagination">
