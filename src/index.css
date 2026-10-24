@@ -334,8 +334,9 @@ header {
 }
 
 .filter-types {
+  padding: 0;
+  margin: 0;
   border: none;
-  padding: 20px 0px;
   margin-bottom: 15px;
 }
 
@@ -350,6 +351,57 @@ header {
   cursor: pointer;
   text-transform: capitalize;
   padding: 8px 13px;
+}
+
+.filters {
+  padding: 20px 0px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between
+}
+
+.filter-actions {
+  display: flex;
+  align-items: start;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.filter-actions>button {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 65%;
+  border: 1px solid transparent;
+}
+
+.filter-actions>button:hover {
+  background-color: white;
+  border: 1px solid #a3a3a3;
+}
+
+.filter-actions>button:focus-visible {
+  outline: 1px solid #a3a3a3;
+  outline-offset: 2px
+}
+
+.order-by {
+  cursor: pointer;
+  border: 0;
+  background-color: white;
+  padding: 12px;
+  border-radius: 30px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.527);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 @media (max-width: 768px) {
@@ -393,5 +445,25 @@ header {
   .navbar-controls>form>input {
     width: 100%;
     box-sizing: border-box
+  }
+
+  .filter-types__option {
+    padding: 4px 8px;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .order-by {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 15px;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+    width: 100%;
   }
 }

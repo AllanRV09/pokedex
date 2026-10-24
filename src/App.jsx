@@ -3,6 +3,8 @@ import PokemonCard from "./components/PokemonCard"
 import PokemonCardSkeleton from "./components/skeletons/PokemonCardSkeleton"
 import NavBar from "./components/NavBar"
 import TypesFilter from "./components/TypesFilter"
+import OrderBy from "./components/OrderBy"
+import { HiXMark } from "react-icons/hi2";
 
 const PAGE_SIZE = 20
 
@@ -15,6 +17,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1)
   const [types, setTypes] = useState([])
   const [typeFilter, setTypeFilter] = useState([])
+  const [orderBy, setOrderBy] = useState("initial-value")
 
   function handleSearchChange(value) {
     setSearch(value)
@@ -155,22 +158,46 @@ function App() {
     return str.trim() !== '' && Number.isFinite(Number(str));
   }
 
+  function getPokemonId(pokemon) {
+    const urlSplit = pokemon.url.split("/")
+
+    const idPokemon = urlSplit[urlSplit.length - 2]
+
+    return parseInt(idPokemon)
+  }
+
   const pokemonToFilter = typeFilter.length > 0 ?
     pokemonFilteredByType :
     pokemon
 
   const filteredPokemon = pokemonToFilter.filter(poke => {
-    const pokemonUrlSplited = poke.url.split("/")
-    const lastPokemonUrlSplited = pokemonUrlSplited[pokemonUrlSplited.length - 2]
+    const pokemonId = getPokemonId(poke)
 
     if (isNumber(search)) {
-      return lastPokemonUrlSplited === search.trim()
+      return pokemonId === parseInt(search.trim())
     }
 
     return poke.name.includes(search.trim().toLocaleLowerCase())
   })
 
-  const numberPages = Math.ceil(filteredPokemon.length / PAGE_SIZE)
+  function getOrderedPokemon(filteredPokemon) {
+    switch (orderBy) {
+      case "initial-value":
+        return filteredPokemon
+      case "id-asc":
+        return [...filteredPokemon].sort((a, b) => getPokemonId(a) - getPokemonId(b))
+      case "id-desc":
+        return [...filteredPokemon].sort((a, b) => getPokemonId(b) - getPokemonId(a))
+      case "name-asc":
+        return [...filteredPokemon].sort((a, b) => a.name.localeCompare(b.name))
+      case "name-desc":
+        return [...filteredPokemon].sort((a, b) => b.name.localeCompare(a.name))
+    }
+  }
+
+  const filteredPokemonOrdered = getOrderedPokemon(filteredPokemon)
+
+  const numberPages = Math.ceil(filteredPokemonOrdered.length / PAGE_SIZE)
 
   const pageItems = (() => {
     if (numberPages <= 5) {
@@ -189,7 +216,7 @@ function App() {
   })()
 
   const startIndex = (currentPage - 1) * PAGE_SIZE
-  const visiblePokemon = filteredPokemon.slice(startIndex, startIndex + PAGE_SIZE)
+  const visiblePokemon = filteredPokemonOrdered.slice(startIndex, startIndex + PAGE_SIZE)
 
   const pokemonContent =
     error !== "" ? (
@@ -205,7 +232,7 @@ function App() {
                 <PokemonCardSkeleton />
               </article>
             ))
-          ) : search !== "" && filteredPokemon.length === 0 ? (
+          ) : search !== "" && filteredPokemonOrdered.length === 0 ? (
             <p>No Pokémon found. Try a different search!</p>
           ) : (
             visiblePokemon.map(poke =>
@@ -216,6 +243,12 @@ function App() {
       </section>
     )
 
+    function handleClearFilters() {
+      setSearch("")
+      setTypeFilter([])
+      setCurrentPage(1)
+    }
+
   return (
     <>
       <header>
@@ -224,19 +257,34 @@ function App() {
       <main>
         <h2>Discover All Pokémon</h2>
         <p>Explore the Pokédex and learn about Pokémon from every generation.</p>
-        <fieldset className="filter-types">
-          <div className="filter-types__options">
-            {types.map(type => (
-              <TypesFilter
-                key={type.name}
-                types={type}
-                typeFilter={typeFilter}
-                setTypeFilter={setTypeFilter}
-                setCurrentPage={setCurrentPage}
-              />
-            ))}
+        <div className="filters">
+          <fieldset className="filter-types">
+            <div className="filter-types__options">
+              {types.map(type => (
+                <TypesFilter
+                  key={type.name}
+                  types={type}
+                  typeFilter={typeFilter}
+                  setTypeFilter={setTypeFilter}
+                  setCurrentPage={setCurrentPage}
+                />
+              ))}
+            </div>
+          </fieldset>
+
+          <div className="filter-actions">
+            {(search.trim() !== "" || typeFilter.length > 0) && <button onClick={handleClearFilters}>
+              <HiXMark size={23} />
+              Clear filters
+            </button>}
+
+            <OrderBy
+              orderBy={orderBy}
+              setOrderBy={setOrderBy}
+              setCurrentPage={setCurrentPage}
+            />
           </div>
-        </fieldset>
+        </div>
         {pokemonContent}
         {numberPages > 1 && (
           <nav className="pagination" aria-label="Pokemon pagination">
