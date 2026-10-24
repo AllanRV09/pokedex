@@ -1,12 +1,23 @@
+import StatusState from "./StatusState"
 import PokemonCard from "./PokemonCard"
 import PokemonCardSkeleton from "./skeletons/PokemonCardSkeleton"
+import { MdOutlineSearch } from "react-icons/md";
+import { FaCircleExclamation } from "react-icons/fa6";
 
 export default function PokemonResults(props) {
     return (
         props.error !== "" ? (
-            <p>{props.error}</p>
+            <StatusState
+                    name={"Unable to load Pokémon"}
+                    message={props.error}
+                    icon={<FaCircleExclamation size={40} color="#FF746C" />}
+                />
         ) : props.isPokemonListEmpty ? (
-            <p>No Pokémon found.</p>
+            <StatusState
+                    name={"No Pokémon available"}
+                    message={"No Pokémon are available to display right now."}
+                    icon={<MdOutlineSearch size={40} />}
+                />
         ) : (
             <section className="pokemon-list">
                 {
@@ -17,7 +28,11 @@ export default function PokemonResults(props) {
                             </article>
                         ))
                     ) : props.hasNoResults ? (
-                        <p>No Pokémon match your current filters. Try adjusting your search or type selection.</p>
+                        <StatusState
+                                name={"No results"}
+                                message={"No Pokémon match your search or selected types. Try adjusting or clearing your filters."}
+                                icon={<MdOutlineSearch size={40} />}
+                            />
                     ) : (
                         props.visiblePokemon.map(poke =>
                             <PokemonCard key={poke.name} pokemon={poke} />

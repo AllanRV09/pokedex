@@ -404,6 +404,35 @@ header {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  max-width: 300px;
+  border-radius: 30px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  color: rgba(0, 0, 0, 0.541);
+}
+
+.empty-state>p {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 15px 0px 10px 0;
+}
+
+.empty-state>span {
+  text-align: center;
+}
+
+.empty-state-area {
+  display: grid;
+  place-items: center;
+  min-height: 45vh;
+  grid-column: 1 / -1
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
