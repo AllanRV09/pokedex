@@ -1,157 +1,31 @@
-import { useEffect, useState } from "react"
-import PokemonCard from "./components/PokemonCard"
-import PokemonCardSkeleton from "./components/skeletons/PokemonCardSkeleton"
+import { useState } from "react"
 import NavBar from "./components/NavBar"
-import TypesFilter from "./components/TypesFilter"
-import OrderBy from "./components/OrderBy"
-import { HiXMark } from "react-icons/hi2";
+import Pagination from "./components/Pagination"
+import PokemonResults from "./components/PokemonResults"
+import usePokemon from "./hooks/usePokemon";
+import usePokemonByTypes from "./hooks/usePokemonByTypes";
+import usePokemonTypes from "./hooks/usePokemonTypes";
+import Filters from "./components/Filters";
 
 const PAGE_SIZE = 20
 
 function App() {
-  const [pokemon, setPokemon] = useState([])
-  const [pokemonFilteredByType, setPokemonFilteredByType] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const [types, setTypes] = useState([])
   const [typeFilter, setTypeFilter] = useState([])
   const [orderBy, setOrderBy] = useState("initial-value")
+
+  const { pokemon, loading } = usePokemon({ PAGE_SIZE, setError })
 
   function handleSearchChange(value) {
     setSearch(value)
     setCurrentPage(1)
   }
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch(`https://pokeapi.co/api/v2/pokemon?limit=${PAGE_SIZE}`, { signal: controller.signal })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Response status: ${res.status}`)
-        }
-        return res.json()
-      })
-      .then(data => {
-        return (
-          fetch(`https://pokeapi.co/api/v2/pokemon?limit=${data.count}`, { signal: controller.signal })
-            .then(res => {
-              if (!res.ok) {
-                throw new Error(`Response status: ${res.status}`)
-              }
+  const { pokemonFilteredByType, loadingByType, setLoadingByType } = usePokemonByTypes({ typeFilter, setError })
 
-              return res.json()
-            })
-            .then(data => setPokemon(data.results))
-        )
-      })
-      .catch((e) => {
-        if (e.name === "AbortError") return
-        console.error("Error:", e)
-        setError("Unable to load Pokémon. Please try again later.")
-      })
-      .finally(() => { if (!controller.signal.aborted) setLoading(false) })
-
-    return () => controller.abort()
-  }, [])
-
-  useEffect(() => {
-    const controller = new AbortController()
-    fetch("https://pokeapi.co/api/v2/type/", { signal: controller.signal })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Response status: ${res.status}`)
-        }
-
-        return res.json()
-      })
-      .then(data => {
-        return (
-          fetch(`https://pokeapi.co/api/v2/type/?limit=${data.count}`, { signal: controller.signal })
-            .then(res => {
-              if (!res.ok) {
-                throw new Error(`Response status: ${res.status}`);
-              }
-
-              return res.json()
-            })
-            .then(data => setTypes(data.results.filter(type => !["stellar", "unknown", "shadow"].includes(type.name))))
-        )
-      })
-      .catch((e) => {
-        if (e.name === "AbortError") return
-        console.error("Error:", e)
-        setError("Unable to load Pokémon types. Please try again later.")
-      })
-
-    return () => controller.abort()
-  }, [])
-
-  useEffect(() => {
-    const controller = new AbortController()
-    if (typeFilter.length === 0) return
-
-    if (typeFilter.length === 1) {
-      fetch(`https://pokeapi.co/api/v2/type/${typeFilter[0]}/`, { signal: controller.signal })
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(`Response status: ${res.status}`);
-          }
-
-          return res.json()
-        })
-        .then(data => {
-          const newData = data.pokemon.map(poke => poke.pokemon)
-
-          return setPokemonFilteredByType(newData)
-        })
-        .catch((e) => {
-          if (e.name === "AbortError") return
-          console.error("Error:", e)
-          setError("Unable to load Pokémon by types. Please try again later.")
-        })
-    }
-
-    if (typeFilter.length === 2) {
-      async function handleTypesFilter() {
-        try {
-          const result = await Promise.all([
-            fetch(`https://pokeapi.co/api/v2/type/${typeFilter[0]}/`, { signal: controller.signal })
-              .then(res => {
-                if (!res.ok) {
-                  throw new Error(`Response status: ${res.status}`);
-                }
-
-                return res.json()
-              }),
-            fetch(`https://pokeapi.co/api/v2/type/${typeFilter[1]}/`, { signal: controller.signal })
-              .then(res => {
-                if (!res.ok) {
-                  throw new Error(`Response status: ${res.status}`);
-                }
-
-                return res.json()
-              })
-          ])
-
-          const intersection = result[0].pokemon.filter(type => result[1].pokemon.some(poke => poke.pokemon.name === type.pokemon.name))
-
-          const newData = intersection.map(data => data.pokemon)
-
-          return setPokemonFilteredByType(newData)
-        } catch (e) {
-          if (e.name === "AbortError") return
-          console.error("Error: ", e)
-          setError("Unable to load Pokémon by types. Please try again later.")
-        }
-      }
-
-      handleTypesFilter()
-    }
-
-    return () => controller.abort()
-  }, [typeFilter])
+  const { types } = usePokemonTypes({ setError })
 
   const isNumber = (str) => {
     if (typeof str !== 'string') return false;
@@ -199,55 +73,18 @@ function App() {
 
   const numberPages = Math.ceil(filteredPokemonOrdered.length / PAGE_SIZE)
 
-  const pageItems = (() => {
-    if (numberPages <= 5) {
-      return Array.from({ length: numberPages }, (_, index) => index + 1)
-    }
-
-    if (currentPage <= 3) {
-      return [1, 2, 3, "ellipsis-end", numberPages]
-    }
-
-    if (currentPage >= numberPages - 2) {
-      return [1, "ellipsis-start", numberPages - 2, numberPages - 1, numberPages]
-    }
-
-    return [1, "ellipsis-start", currentPage - 1, currentPage, currentPage + 1, "ellipsis-end", numberPages]
-  })()
-
   const startIndex = (currentPage - 1) * PAGE_SIZE
   const visiblePokemon = filteredPokemonOrdered.slice(startIndex, startIndex + PAGE_SIZE)
 
-  const pokemonContent =
-    error !== "" ? (
-      <p>{error}</p>
-    ) : !loading && pokemon.length === 0 ? (
-      <p>No Pokémon found.</p>
-    ) : (
-      <section className="pokemon-list">
-        {
-          loading ? (
-            Array.from({ length: PAGE_SIZE }).map((_, index) => (
-              <article key={index} className="pokemon-card">
-                <PokemonCardSkeleton />
-              </article>
-            ))
-          ) : search !== "" && filteredPokemonOrdered.length === 0 ? (
-            <p>No Pokémon found. Try a different search!</p>
-          ) : (
-            visiblePokemon.map(poke =>
-              <PokemonCard key={poke.name} pokemon={poke} />
-            )
-          )
-        }
-      </section>
-    )
+  const isPokemonListEmpty = !loading && pokemon.length === 0
+  const hasNoResults = filteredPokemonOrdered.length === 0 && !loading && !loadingByType
 
-    function handleClearFilters() {
-      setSearch("")
-      setTypeFilter([])
-      setCurrentPage(1)
-    }
+  function handleClearFilters() {
+    setSearch("")
+    setTypeFilter([])
+    setCurrentPage(1)
+    setLoadingByType(false)
+  }
 
   return (
     <>
@@ -257,74 +94,33 @@ function App() {
       <main>
         <h2>Discover All Pokémon</h2>
         <p>Explore the Pokédex and learn about Pokémon from every generation.</p>
-        <div className="filters">
-          <fieldset className="filter-types">
-            <div className="filter-types__options">
-              {types.map(type => (
-                <TypesFilter
-                  key={type.name}
-                  types={type}
-                  typeFilter={typeFilter}
-                  setTypeFilter={setTypeFilter}
-                  setCurrentPage={setCurrentPage}
-                />
-              ))}
-            </div>
-          </fieldset>
 
-          <div className="filter-actions">
-            {(search.trim() !== "" || typeFilter.length > 0) && <button onClick={handleClearFilters}>
-              <HiXMark size={23} />
-              Clear filters
-            </button>}
+        <Filters
+          types={types}
+          typeFilter={typeFilter}
+          setTypeFilter={setTypeFilter}
+          setCurrentPage={setCurrentPage}
+          search={search}
+          handleClearFilters={handleClearFilters}
+          orderBy={orderBy}
+          setOrderBy={setOrderBy}
+          setLoadingByType={setLoadingByType}
+        />
 
-            <OrderBy
-              orderBy={orderBy}
-              setOrderBy={setOrderBy}
-              setCurrentPage={setCurrentPage}
-            />
-          </div>
-        </div>
-        {pokemonContent}
-        {numberPages > 1 && (
-          <nav className="pagination" aria-label="Pokemon pagination">
-            <button
-              type="button"
-              className="pagination-button"
-              onClick={() => setCurrentPage(page => page - 1)}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
+        <PokemonResults
+          error={error}
+          loading={loading || loadingByType}
+          isPokemonListEmpty={isPokemonListEmpty}
+          pageSize={PAGE_SIZE}
+          hasNoResults={hasNoResults}
+          visiblePokemon={visiblePokemon}
+        />
 
-            {pageItems.map((item, index) => (
-              typeof item === "number" ? (
-                <button
-                  key={item}
-                  type="button"
-                  className={`pagination-button${currentPage === item ? " active" : ""}`}
-                  aria-current={currentPage === item ? "page" : undefined}
-                  onClick={() => setCurrentPage(item)}
-                >
-                  {item}
-                </button>
-              ) : (
-                <span key={`${item}-${index}`} className="pagination-ellipsis" aria-hidden="true">
-                  ...
-                </span>
-              )
-            ))}
-
-            <button
-              type="button"
-              className="pagination-button"
-              onClick={() => setCurrentPage(page => page + 1)}
-              disabled={currentPage === numberPages}
-            >
-              Next
-            </button>
-          </nav>
-        )}
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          numberPages={numberPages}
+        />
       </main>
     </>
   )

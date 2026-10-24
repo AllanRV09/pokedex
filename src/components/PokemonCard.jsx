@@ -1,27 +1,8 @@
-import { useEffect, useState } from "react"
 import PokemonCardSkeleton from "./skeletons/PokemonCardSkeleton"
+import usePokemonDetails from "../hooks/usePokemonDetails"
 
 export default function PokemonCard(props) {
-    const [pokemonDetails, setPokemonDetails] = useState({})
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState("")
-
-    useEffect(() => {
-        fetch(props.pokemon.url)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Response status: ${res.status}`);
-                }
-
-                return res.json()
-            })
-            .then(data => setPokemonDetails(data))
-            .catch((e) => {
-                console.error("Error: ", e)
-                setError("Failed to load Pokémon details.")
-            })
-            .finally(() => setLoading(false))
-    }, [props.pokemon.url])
+    const { pokemonDetails, loading, error } = usePokemonDetails(props.pokemon.url)
 
     const imgUrl = pokemonDetails.sprites?.other?.["official-artwork"]?.front_default
 

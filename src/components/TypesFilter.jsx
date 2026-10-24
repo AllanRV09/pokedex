@@ -4,14 +4,13 @@ export default function TypesFilter(props) {
 
     function handleCheckbox(e) {
         const isChecked = e.target.checked
+        const nextTypeFilter = isChecked
+            ? [...props.typeFilter, props.types.name]
+            : props.typeFilter.filter(type => type !== e.target.name)
 
         props.setCurrentPage(1)
-
-        if (isChecked) {
-            return props.setTypeFilter([...props.typeFilter, props.types.name])
-        }
-
-        return props.setTypeFilter(props.typeFilter.filter(type => props.types.name !== type))
+        props.setTypeFilter(nextTypeFilter)
+        props.setLoadingByType(nextTypeFilter.length > 0)
     }
 
     return (
