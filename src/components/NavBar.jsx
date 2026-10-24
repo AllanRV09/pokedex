@@ -1,7 +1,7 @@
 import { useState } from "react";
 import pokeball from "../assets/pokeball.webp"
 import { MdOutlineSearch, MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
-import { FaBars } from "react-icons/fa6";
+import { FaBars, FaXmark } from "react-icons/fa6";
 
 export default function NavBar(props) {
     const [darkMode, setDarkMode] = useState(false)
@@ -25,7 +25,7 @@ export default function NavBar(props) {
                     aria-controls="navbar"
                     aria-label={isOpen ? "Close menu" : "Open menu"}
                 >
-                    <FaBars size={20}/>
+                    {isOpen ? <FaXmark size={23}/> : <FaBars size={20}/>}
                 </button>
             </div>
 
