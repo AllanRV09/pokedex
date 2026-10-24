@@ -1,22 +1,29 @@
 import TypesFilter from "./TypesFilter";
 import OrderBy from "./OrderBy"
 import { HiXMark } from "react-icons/hi2";
+import PokemonTypesSkeleton from "./skeletons/PokemonTypesSkeleton";
 
 export default function Filters(props) {
     return (
         <div className="filters">
             <fieldset className="filter-types">
                 <div className="filter-types__options">
-                    {props.types.map(type => (
-                        <TypesFilter
-                            key={type.name}
-                            types={type}
-                            typeFilter={props.typeFilter}
-                            setTypeFilter={props.setTypeFilter}
-                            setCurrentPage={props.setCurrentPage}
-                            setLoadingByType={props.setLoadingByType}
-                        />
-                    ))}
+                    {
+                        props.loadingTypes ?
+                            Array.from({ length: 18 }, (_, index) => (
+                                <PokemonTypesSkeleton key={index} />
+                            ))
+                            : props.types.map(type => (
+                                <TypesFilter
+                                    key={type.name}
+                                    types={type}
+                                    typeFilter={props.typeFilter}
+                                    setTypeFilter={props.setTypeFilter}
+                                    setCurrentPage={props.setCurrentPage}
+                                    setLoadingByType={props.setLoadingByType}
+                                />
+                            ))
+                    }
                 </div>
             </fieldset>
 
@@ -33,5 +40,6 @@ export default function Filters(props) {
                 />
             </div>
         </div>
+
     )
 }

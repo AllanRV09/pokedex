@@ -25,7 +25,7 @@ function App() {
 
   const { pokemonFilteredByType, loadingByType, setLoadingByType } = usePokemonByTypes({ typeFilter, setError })
 
-  const { types } = usePokemonTypes({ setError })
+  const { types, loadingTypes } = usePokemonTypes({ setError })
 
   const isNumber = (str) => {
     if (typeof str !== 'string') return false;
@@ -97,6 +97,7 @@ function App() {
 
         <Filters
           types={types}
+          loadingTypes={loadingTypes}
           typeFilter={typeFilter}
           setTypeFilter={setTypeFilter}
           setCurrentPage={setCurrentPage}

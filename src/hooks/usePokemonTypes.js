@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 
-export default function usePokemonTypes({ setError} ) {
-    const [types, setTypes] = useState([])
+export default function usePokemonTypes({ setError }) {
+  const [types, setTypes] = useState([])
+  const [loadingTypes, setLoadingTypes] = useState(true)
 
-    useEffect(() => {
+  useEffect(() => {
     const controller = new AbortController()
     fetch("https://pokeapi.co/api/v2/type/", { signal: controller.signal })
       .then(res => {
@@ -31,9 +32,10 @@ export default function usePokemonTypes({ setError} ) {
         console.error("Error:", e)
         setError("Unable to load Pokémon types. Please try again later.")
       })
+      .finally(() => { if (!controller.signal.aborted) setLoadingTypes(false) })
 
     return () => controller.abort()
   }, [setError])
 
-  return { types }
+  return { types, loadingTypes }
 }

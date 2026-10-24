@@ -433,6 +433,11 @@ header {
   grid-column: 1 / -1
 }
 
+.type-filter-skeleton {
+  height: 38px;
+  width: 92px;
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
@@ -494,5 +499,10 @@ header {
   .filter-actions {
     flex-direction: column;
     width: 100%;
+  }
+
+  .type-filter-skeleton {
+    width: 84px;
+    height: 31.4px
   }
 }
