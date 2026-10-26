@@ -40,20 +40,20 @@ Construir una Pokédex con un diseño minimalista, limpio y responsive, aplicand
 
 ## Fase 3. Detalles de cada Pokémon
 
-- [ ] Permitir seleccionar una tarjeta para consultar los detalles del Pokémon.
-- [ ] Mostrar una imagen ampliada.
-- [ ] Mostrar su número, nombre y tipos.
-- [ ] Mostrar altura y peso.
-- [ ] Mostrar sus habilidades.
-- [ ] Mostrar sus estadísticas base:
-  - [ ] PS.
-  - [ ] Ataque.
-  - [ ] Defensa.
-  - [ ] Ataque especial.
-  - [ ] Defensa especial.
-  - [ ] Velocidad.
-- [ ] Mostrar una descripción en español cuando esté disponible.
-- [ ] Mostrar su línea evolutiva.
+- [x] Permitir seleccionar una tarjeta para consultar los detalles del Pokémon.
+- [x] Mostrar una imagen ampliada.
+- [x] Mostrar su número, nombre y tipos.
+- [x] Mostrar altura y peso.
+- [x] Mostrar sus habilidades.
+- [x] Mostrar sus estadísticas base:
+  - [x] PS.
+  - [x] Ataque.
+  - [x] Defensa.
+  - [x] Ataque especial.
+  - [x] Defensa especial.
+  - [x] Velocidad.
+- [x] Mostrar una descripción cuando esté disponible.
+- [x] Mostrar su línea evolutiva.
 
 ## Fase 4. Favoritos
 

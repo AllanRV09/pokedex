@@ -1,5 +1,6 @@
 import PokemonCardSkeleton from "./skeletons/PokemonCardSkeleton"
 import usePokemonDetails from "../hooks/usePokemonDetails"
+import { Link } from "react-router"
 
 export default function PokemonCard(props) {
     const { pokemonDetails, loading, error } = usePokemonDetails(props.pokemon.url)
@@ -14,7 +15,7 @@ export default function PokemonCard(props) {
         ) : !pokemonDetails.name ? (
             <p>No Pokémon details found.</p>
         ) : (
-            <>
+            <Link className="pokemon-card__link" to={`/pokemon/${pokemonDetails.id}`}>
                 <span>{pokemonDetails.id && "#" + pokemonDetails.id.toString().padStart(3, "0")}</span>
 
                 <h2>{pokemonDetails.name}</h2>
@@ -33,7 +34,7 @@ export default function PokemonCard(props) {
                 </ul>
 
                 <img src={imgUrl} alt={`Image of ${pokemonDetails.name} in its card`} />
-            </>
+            </Link>
         )
 
     return (
